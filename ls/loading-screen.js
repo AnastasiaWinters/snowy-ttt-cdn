@@ -16,6 +16,9 @@
   var transitionStarted = false;
   var profileImageSources = [];
   var profileImageSourceIndex = 0;
+  var welcomeUntil = Date.now() + 1000;
+  var transitionTimer = null;
+  var pendingMapName = null;
 
   function getParameter(name) {
     var requestedName = name.toLowerCase();
@@ -125,11 +128,16 @@
   }
 
   function transitionToMap(mapName) {
-    if (transitionStarted) {
+    if (transitionStarted || transitionTimer !== null) {
       return;
     }
 
-    useMapImage(mapName);
+    pendingMapName = mapName;
+    var waitTime = Math.max(0, welcomeUntil - Date.now());
+    transitionTimer = window.setTimeout(function () {
+      transitionTimer = null;
+      useMapImage(pendingMapName);
+    }, waitTime);
   }
 
   window.GameDetails = function (serverName, serverUrl, mapName, maxPlayers, steamId, gamemode) {
