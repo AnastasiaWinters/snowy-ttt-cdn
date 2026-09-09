@@ -1,7 +1,6 @@
 (function () {
   'use strict';
 
-  var TEST_MODE = false;
   var TEST_MAP = 'ttt_minecraft_b5';
   var MAP_IMAGE_DIRECTORY = 'img/maps/';
   var FALLBACK_MAP_IMAGE = 'img/maps/gm_construct.jpg';
@@ -19,6 +18,7 @@
   var welcomeUntil = Date.now() + 1000;
   var transitionTimer = null;
   var pendingMapName = null;
+  var testMode = false;
 
   function getParameter(name) {
     var requestedName = name.toLowerCase();
@@ -153,10 +153,7 @@
 
   window.GameDetails = function (serverName, serverUrl, mapName, maxPlayers, steamId, gamemode) {
     configurePlayer(steamId);
-    if (mapName) {
-      params.set('Map', mapName);
-    }
-    if (!TEST_MODE) {
+    if (!testMode) {
       transitionToMap(mapName);
     }
   };
@@ -171,8 +168,9 @@
 
   addSnowfallDots();
   configurePlayer(getParameter('SteamId') || getParameter('SteamID64'), getParameter('Username') || getParameter('Name'));
+  testMode = getParameter('test') === '1';
 
-  if (TEST_MODE) {
+  if (testMode) {
     window.setTimeout(function () {
       transitionToMap(TEST_MAP);
     }, 2500);
