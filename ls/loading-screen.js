@@ -11,6 +11,7 @@
   var mapBackground = document.getElementById('map-background');
   var mapNameElement = document.getElementById('map-name');
   var playerNameElement = document.getElementById('player-name');
+  var loadingTipElement = document.getElementById('loading-tip');
   var profileImage = document.getElementById('profile-image');
   var transitionStarted = false;
   var profileImageSources = [];
@@ -86,6 +87,80 @@
         dot.style.animationDelay = (-Math.random() * 7) + 's';
         snowText.appendChild(dot);
       }
+
+    }
+  }
+
+  function loadRandomTip() {
+    var request = new XMLHttpRequest();
+    request.open('GET', 'tips.json', true);
+    request.onreadystatechange = function () {
+      var tips;
+      var selectedTip;
+
+      if (request.readyState !== 4 || request.status < 200 || request.status >= 300) {
+        return;
+      }
+
+      try {
+        tips = JSON.parse(request.responseText);
+      } catch (error) {
+        return;
+      }
+
+      if (!tips || !tips.length) {
+        return;
+      }
+
+      selectedTip = tips[Math.floor(Math.random() * tips.length)];
+      if (selectedTip && typeof selectedTip.text === 'string' && selectedTip.text) {
+        var roles;
+        var roleIndex;
+        loadingTipElement.textContent = '';
+        if (selectedTip.role && selectedTip.role !== 'NONE') {
+          roles = selectedTip.role.split('/');
+          loadingTipElement.appendChild(document.createTextNode(
+            selectedTip.role.indexOf('Innocent') === 0 ? 'As an ' : 'As a '
+          ));
+          for (roleIndex = 0; roleIndex < roles.length; roleIndex += 1) {
+            var roleLabel = document.createElement('span');
+            roleLabel.className = 'tip-role tip-role-' + roles[roleIndex].toLowerCase();
+            roleLabel.textContent = roles[roleIndex];
+            loadingTipElement.appendChild(roleLabel);
+            if (roleIndex < roles.length - 1) {
+              loadingTipElement.appendChild(document.createTextNode('/'));
+            }
+          }
+          loadingTipElement.appendChild(document.createTextNode(', '));
+        }
+        appendHighlightedTipText(selectedTip.text);
+      }
+    };
+    request.send();
+  }
+
+  function appendHighlightedTipText(text) {
+    var rolePattern = /(Jesters?|Traitors?|Detectives?|Innocents?)/g;
+    var lastIndex = 0;
+    var match;
+    var roleName;
+    var roleLabel;
+
+    while ((match = rolePattern.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        loadingTipElement.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
+      }
+
+      roleName = match[0].replace(/s$/i, '');
+      roleLabel = document.createElement('span');
+      roleLabel.className = 'tip-role tip-role-' + roleName.toLowerCase();
+      roleLabel.textContent = match[0];
+      loadingTipElement.appendChild(roleLabel);
+      lastIndex = rolePattern.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      loadingTipElement.appendChild(document.createTextNode(text.substring(lastIndex)));
     }
   }
 
@@ -223,6 +298,7 @@
   };
 
   addSnowfallDots();
+  loadRandomTip();
   configurePlayer(getParameter('SteamId') || getParameter('SteamID64'), getParameter('Username') || getParameter('Name'));
   testMode = getParameter('test') === '1';
 

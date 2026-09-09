@@ -1,0 +1,110 @@
+[
+  {
+    "role": "Innocent/Detective",
+    "text": "Listen carefully for signs of nearby activity."
+  },
+  {
+    "role": "Innocent/Detective",
+    "text": "If you watch someone kill another player, tell them to ID the body. Refusal usually always means they're a traitor."
+  },
+  {
+    "role": "Innocent/Detective",
+    "text": "Stay close enough to allies for help, but avoid grouping too tightly."
+  },
+  {
+    "role": "Detective",
+    "text": "Share confirmed information instead of every suspicion."
+  },
+  {
+    "role": "Innocent",
+    "text": "Investigate unusual deaths before making accusations."
+  },
+  {
+    "role": "Innocent/Detective",
+    "text": "If somebody dies, and another player finally catches up to someone, there is a high likelihood that player may be a traitor!"
+  },
+  {
+    "role": "Traitor",
+    "text": "Use distractions to divide groups."
+  },
+  {
+    "role": "NONE",
+    "text": "Jesters are trying to get killed. Think twice before taking the bait."
+  },
+  {
+    "role": "Jester",
+    "text": "Be just suspicious enough to ruin everyone's afternoon."
+  },
+  {
+    "role": "Jester",
+    "text": "Ask one 'harmless' question and watch the entire lobby form a committee."
+  },
+  {
+    "role": "Jester",
+    "text": "Confidence is optional. Dramatic accusations are not."
+  },
+  {
+    "role": "Jester",
+    "text": "Ragebait until the sun goes down."
+  },
+  {
+    "role": "Jester",
+    "text": "Make your defense so convincing that someone has to test it."
+  },
+  {
+    "role": "NONE",
+    "text": "SMGs are effective while moving and fighting at close to medium range."
+  },
+  {
+    "role": "NONE",
+    "text": "Rifles reward good positioning and controlled bursts."
+  },
+  {
+    "role": "NONE",
+    "text": "Shotguns are strongest at close range."
+  },
+  {
+    "role": "NONE",
+    "text": "Pistols are reliable backup weapons with a few specialized strengths."
+  },
+  {
+    "role": "NONE",
+    "text": "Choose a weapon that suits the distance and pace of the encounter."
+  },
+  {
+    "role": "Detective/Traitor",
+    "text": "Save a credit or two for equipment that can change the outcome of a fight."
+  },
+  {
+    "role": "Innocent/Detective",
+    "text": "Watch how players behave around bodies, accusations, and combat."
+  },
+  {
+    "role": "Innocent/Detective",
+    "text": "Remember who was present when an important event occurred."
+  },
+  {
+    "role": "Innocent/Detective",
+    "text": "Use cover to limit how many players can attack you at once."
+  },
+  {
+    "role": "NONE",
+    "text": "Pick your fights. You don't need to be present in every fight."
+  },
+  {
+    "role": "Innocent/Detective",
+    "text": "Keep track of remaining players and possible roles."
+  },
+  {
+    "role": "NONE",
+    "text": "A quiet round can change quickly after the first confirmed kill."
+  },
+  {
+    "role": "Innocent",
+    "text": "Sometimes; waiting for more information is better than making a guess."
+  },
+  {
+    "role": "NONE",
+    "text": "User '4K' reported lost it all gambling during the beta, losing 4 versus matches in a row."
+  }
+]

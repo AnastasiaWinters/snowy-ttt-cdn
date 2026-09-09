@@ -100,12 +100,19 @@ body {
 }
 
 .map-state {
-  opacity: 0;
+  opacity: 1;
+  visibility: hidden;
   pointer-events: none;
+  -webkit-transition: none;
+  transition: none;
 }
 
 .map-state.is-visible {
   opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  -webkit-transition-delay: 0s;
+  transition-delay: 0s;
 }
 
 .welcome-heading {
@@ -197,9 +204,56 @@ body {
   height: 100%;
   padding: 48px 40px;
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(33, 39, 48, .83), rgba(16, 22, 30, .74));
-  box-shadow: -1rem 0 4rem rgba(0, 0, 0, .18);
+  background: rgba(8, 11, 15, .74);
+  box-shadow: -3rem 0 6rem rgba(0, 0, 0, .52);
   text-align: center;
+}
+
+.map-panel::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  content: "";
+  opacity: .5;
+  background-color: rgba(33, 39, 48, .75);
+  background-image: radial-gradient(circle, rgba(4, 6, 8, .28) 0 1px, rgba(4, 6, 8, .12) 1.5px, transparent 3px);
+  background-size: 8px 8px;
+}
+
+.map-panel::after {
+  position: absolute;
+  top: -16px;
+  right: -16px;
+  bottom: -16px;
+  left: -16px;
+  z-index: 0;
+  content: "";
+  background: rgba(8, 11, 15, .18);
+  opacity: 1;
+  -webkit-backdrop-filter: blur(0);
+  backdrop-filter: blur(0);
+  -webkit-transition: -webkit-backdrop-filter 1.4s cubic-bezier(.9, 0, 1, 1);
+  transition: backdrop-filter 1.4s cubic-bezier(.9, 0, 1, 1);
+}
+
+.map-state.is-visible .map-panel::after {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.map-panel > * {
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  -webkit-transition: opacity 1.4s ease;
+  transition: opacity 1.4s ease;
+}
+
+.map-state.is-visible .map-panel > * {
+  opacity: 1;
 }
 
 .profile-block {
@@ -236,9 +290,11 @@ body {
 
 .panel-label {
   margin: 0 0 .35rem;
-  color: rgba(255, 255, 255, .7);
+  color: #b8dfff;
   font-size: .8rem;
   letter-spacing: .14em;
+  text-align: center;
+  text-shadow: 0 0 8px rgba(184, 223, 255, .8);
   text-transform: uppercase;
 }
 
@@ -255,15 +311,34 @@ body {
   font-size: 16px;
 }
 
+.server-title {
+  margin: .25rem 0 1rem;
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 1.1;
+  text-shadow: 0 0 6px currentColor;
+}
+
+.server-title .snow-blue {
+  color: #a8deff;
+}
+
+.server-title .snow-purple {
+  color: #d3a8ff;
+}
+
+.server-title .snow-white {
+  color: #ffffff;
+}
+
 .tutorial-list {
   display: block;
   margin: 0 -8px;
   padding: 0;
   color: rgba(255, 255, 255, .8);
-  font-family: Arial, sans-serif;
+  font-family: "Stratum No2 Bold", sans-serif;
   font-size: 13px;
-  font-weight: 400;
-  list-style: none;
+  font-weight: 700;
   text-align: left;
 }
 
@@ -315,6 +390,50 @@ body {
   margin-top: 16px;
   padding-top: 14px;
   border-top: 1px solid rgba(255, 255, 255, .25);
+}
+
+.controls-guide .panel-label {
+  margin-bottom: 8px;
+}
+
+.tips-guide {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, .25);
+}
+
+.tips-guide .panel-label {
+  margin-bottom: 8px;
+}
+
+.tips-guide p {
+  margin: 0;
+  line-height: 1.25;
+}
+
+.tip-role {
+  font-weight: 700;
+  text-shadow: 0 0 8px currentColor;
+}
+
+.tips-guide p {
+  color: rgba(255, 255, 255, .8);
+}
+
+.tip-role-detective {
+  color: #75bfff;
+}
+
+.tip-role-innocent {
+  color: #70e59a;
+}
+
+.tip-role-traitor {
+  color: #ff7777;
+}
+
+.tip-role-jester {
+  color: #ff8ed6;
 }
 
 .tutorial-list strong {
