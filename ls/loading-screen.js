@@ -16,7 +16,7 @@
   var transitionStarted = false;
   var profileImageSources = [];
   var profileImageSourceIndex = 0;
-  var welcomeUntil = Date.now() + 1000;
+  var welcomeUntil = Date.now() + 500;
   var transitionTimer = null;
   var pendingMapName = null;
   var activeMapName = null;
