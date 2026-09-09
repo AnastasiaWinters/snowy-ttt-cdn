@@ -9,10 +9,15 @@
   var mapState = document.getElementById('map-state');
   var loadingScreen = document.getElementById('loading-screen');
   var mapBackground = document.getElementById('map-background');
+  var mapPanel = document.querySelector('.map-panel');
+  var mapPanelContent = document.getElementById('map-panel-content');
+  var profileBlock = document.querySelector('.profile-block');
+  var profileImage = document.getElementById('profile-image');
+  var topPanelRule = document.getElementById('top-panel-rule');
+  var gameMode = document.querySelector('.game-mode');
   var mapNameElement = document.getElementById('map-name');
   var playerNameElement = document.getElementById('player-name');
   var loadingTipElement = document.getElementById('loading-tip');
-  var profileImage = document.getElementById('profile-image');
   var transitionStarted = false;
   var profileImageSources = [];
   var profileImageSourceIndex = 0;
@@ -22,6 +27,30 @@
   var activeMapName = null;
   var gameDetailsReceived = false;
   var testMode = false;
+
+  function scaleMapPanelContent() {
+    var scale = Math.min(1, Math.max(.6, window.innerHeight / 1080));
+    var focusedScale = Math.min(1, Math.max(.45, (window.innerHeight / 1080) * 1.25 - .25));
+    var panelPaddingVertical = 48 * scale;
+    var panelPaddingHorizontal = window.innerHeight <= 760 ? 0 : 40 * focusedScale;
+    var panelPaddingTop = window.innerHeight <= 760 ? 0 : panelPaddingVertical;
+
+    mapPanelContent.style.webkitTransform = 'scale(' + scale + ')';
+    mapPanelContent.style.transform = 'scale(' + scale + ')';
+    mapPanel.style.padding = panelPaddingTop + 'px ' + panelPaddingHorizontal + 'px ' + panelPaddingVertical + 'px';
+    profileImage.style.width = (128 * focusedScale) + 'px';
+    profileImage.style.height = (128 * focusedScale) + 'px';
+    mapNameElement.style.fontSize = (34 * focusedScale) + 'px';
+    profileBlock.style.display = window.innerHeight <= 760 ? 'none' : 'block';
+    topPanelRule.style.display = window.innerHeight <= 760 ? 'none' : 'block';
+    gameMode.style.display = window.innerHeight <= 760 ? 'none' : 'block';
+
+    if (window.innerWidth > 800) {
+      mapPanel.style.width = (440 * scale) + 'px';
+    } else {
+      mapPanel.style.width = '100%';
+    }
+  }
 
   function getParameter(name) {
     var requestedName = name.toLowerCase();
@@ -300,6 +329,8 @@
   addSnowfallDots();
   loadRandomTip();
   configurePlayer(getParameter('SteamId') || getParameter('SteamID64'), getParameter('Username') || getParameter('Name'));
+  scaleMapPanelContent();
+  window.addEventListener('resize', scaleMapPanelContent);
   testMode = getParameter('test') === '1';
 
   if (testMode) {

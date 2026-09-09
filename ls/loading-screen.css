@@ -256,6 +256,14 @@ body {
   opacity: 1;
 }
 
+.map-panel-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  -webkit-transform-origin: top center;
+  transform-origin: top center;
+}
+
 .profile-block {
   text-align: center;
 }
