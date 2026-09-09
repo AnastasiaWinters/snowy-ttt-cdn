@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var TEST_MODE = true;
+  var TEST_MODE = false;
   var TEST_MAP = 'ttt_minecraft_b5';
   var MAP_IMAGE_DIRECTORY = 'img/maps/';
   var FALLBACK_MAP_IMAGE = 'img/maps/gm_construct.jpg';
