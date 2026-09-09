@@ -18,6 +18,8 @@
   var welcomeUntil = Date.now() + 1000;
   var transitionTimer = null;
   var pendingMapName = null;
+  var activeMapName = null;
+  var gameDetailsReceived = false;
   var testMode = false;
 
   function getParameter(name) {
@@ -48,7 +50,10 @@
   }
 
   function cleanMapName(mapName) {
-    return String(mapName || '').replace(/[^a-zA-Z0-9_-]/g, '');
+    var value = String(mapName || '').trim().replace(/\\/g, '/');
+    value = value.substring(value.lastIndexOf('/') + 1);
+    value = value.replace(/\.bsp$/i, '');
+    return value.replace(/[^a-zA-Z0-9_-]/g, '');
   }
 
   function readableMapName(mapName) {
@@ -122,16 +127,27 @@
 
     image.onload = function () {
       mapBackground.style.backgroundImage = 'url("' + imagePath + '")';
-      mapNameElement.textContent = readableMapName(safeMapName || 'gm_construct');
+      mapNameElement.textContent = readableMapName(safeMapName);
       mapBackground.classList.add('has-map-image');
       genericState.classList.add('is-hidden');
       mapState.classList.add('is-visible');
       transitionStarted = true;
+      activeMapName = safeMapName;
     };
 
     image.onerror = function () {
       if (imagePath !== FALLBACK_MAP_IMAGE) {
-        useMapImage('gm_construct');
+        var fallbackImage = new Image();
+        fallbackImage.onload = function () {
+          mapBackground.style.backgroundImage = 'url("' + FALLBACK_MAP_IMAGE + '")';
+          mapNameElement.textContent = readableMapName(safeMapName);
+          mapBackground.classList.add('has-map-image');
+          genericState.classList.add('is-hidden');
+          mapState.classList.add('is-visible');
+          transitionStarted = true;
+          activeMapName = safeMapName;
+        };
+        fallbackImage.src = FALLBACK_MAP_IMAGE;
       }
     };
 
@@ -139,11 +155,23 @@
   }
 
   function transitionToMap(mapName) {
-    if (transitionStarted || transitionTimer !== null) {
+    var safeMapName = cleanMapName(mapName);
+    if (!safeMapName) {
       return;
     }
 
-    pendingMapName = mapName;
+    pendingMapName = safeMapName;
+    if (transitionStarted) {
+      if (activeMapName !== safeMapName) {
+        useMapImage(safeMapName);
+      }
+      return;
+    }
+
+    if (transitionTimer !== null) {
+      return;
+    }
+
     var waitTime = Math.max(0, welcomeUntil - Date.now());
     transitionTimer = window.setTimeout(function () {
       transitionTimer = null;
@@ -153,7 +181,8 @@
 
   window.GameDetails = function (serverName, serverUrl, mapName, maxPlayers, steamId, gamemode) {
     configurePlayer(steamId);
-    if (!testMode) {
+    if (cleanMapName(mapName)) {
+      gameDetailsReceived = true;
       transitionToMap(mapName);
     }
   };
@@ -172,7 +201,9 @@
 
   if (testMode) {
     window.setTimeout(function () {
-      transitionToMap(TEST_MAP);
+      if (!gameDetailsReceived) {
+        transitionToMap(TEST_MAP);
+      }
     }, 2500);
   } else if (getParameter('Map')) {
     transitionToMap(getParameter('Map'));
