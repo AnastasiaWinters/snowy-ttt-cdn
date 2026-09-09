@@ -1,15 +1,15 @@
 (function () {
   'use strict';
 
-  var TEST_MODE = false;
+  var TEST_MODE = true;
   var TEST_MAP = 'ttt_minecraft_b5';
   var MAP_IMAGE_DIRECTORY = 'img/maps/';
   var FALLBACK_MAP_IMAGE = 'img/maps/gm_construct.jpg';
   var FALLBACK_PROFILE_IMAGE = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23323a46"/%3E%3Ccircle cx="50" cy="38" r="18" fill="%23b8c3d1"/%3E%3Cpath d="M18 92c3-22 16-33 32-33s29 11 32 33" fill="%23b8c3d1"/%3E%3C/svg%3E';
-  var params = new URLSearchParams(window.location.search);
   var genericState = document.getElementById('generic-state');
   var mapState = document.getElementById('map-state');
   var loadingScreen = document.getElementById('loading-screen');
+  var mapBackground = document.getElementById('map-background');
   var mapNameElement = document.getElementById('map-name');
   var playerNameElement = document.getElementById('player-name');
   var profileImage = document.getElementById('profile-image');
@@ -22,13 +22,18 @@
 
   function getParameter(name) {
     var requestedName = name.toLowerCase();
-    var value = null;
-    params.forEach(function (parameterValue, parameterName) {
-      if (value === null && parameterName.toLowerCase() === requestedName) {
-        value = parameterValue;
+    var query = window.location.search.substring(1).split('&');
+    var index;
+
+    for (index = 0; index < query.length; index += 1) {
+      var pair = query[index].split('=');
+      var parameterName = decodeURIComponent(pair[0] || '').toLowerCase();
+      if (parameterName === requestedName) {
+        return decodeURIComponent((pair[1] || '').replace(/\+/g, ' '));
       }
-    });
-    return value;
+    }
+
+    return null;
   }
 
   function normalizeSteamId(steamId) {
@@ -59,18 +64,24 @@
   }
 
   function addSnowfallDots() {
-    document.querySelectorAll('.snow-text').forEach(function (snowText) {
-      for (var index = 0; index < 20; index += 1) {
+    var snowTexts = document.querySelectorAll('.snow-text');
+    var textIndex;
+    var index;
+
+    for (textIndex = 0; textIndex < snowTexts.length; textIndex += 1) {
+      var snowText = snowTexts[textIndex];
+      for (index = 0; index < 20; index += 1) {
         var dot = document.createElement('span');
         dot.className = 'snow-dot';
         dot.setAttribute('aria-hidden', 'true');
-        dot.style.setProperty('--snow-x', (8 + Math.random() * 84) + '%');
-        dot.style.setProperty('--snow-size', (0.027 + Math.random() * 0.033) + 'em');
-        dot.style.setProperty('--snow-duration', (4.5 + Math.random() * 3) + 's');
-        dot.style.setProperty('--snow-delay', (-Math.random() * 7) + 's');
+        dot.style.left = (8 + Math.random() * 84) + '%';
+        dot.style.width = '4px';
+        dot.style.height = '4px';
+        dot.style.webkitAnimationDelay = (-Math.random() * 7) + 's';
+        dot.style.animationDelay = (-Math.random() * 7) + 's';
         snowText.appendChild(dot);
       }
-    });
+    }
   }
 
   function configurePlayer(steamId, username) {
@@ -110,9 +121,9 @@
     var image = new Image();
 
     image.onload = function () {
-      loadingScreen.style.setProperty('--map-image', 'url("' + imagePath + '")');
+      mapBackground.style.backgroundImage = 'url("' + imagePath + '")';
       mapNameElement.textContent = readableMapName(safeMapName || 'gm_construct');
-      loadingScreen.classList.add('has-map-image');
+      mapBackground.classList.add('has-map-image');
       genericState.classList.add('is-hidden');
       mapState.classList.add('is-visible');
       transitionStarted = true;
