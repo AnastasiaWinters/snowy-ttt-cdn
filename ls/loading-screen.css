@@ -125,6 +125,7 @@ body {
 .snow-text {
   display: inline-block;
   position: relative;
+  text-shadow: 0 0 6px currentColor;
 }
 
 .snow-blue {
@@ -192,7 +193,7 @@ body {
   top: 0;
   right: 0;
   bottom: 0;
-  width: 360px;
+  width: 440px;
   height: 100%;
   padding: 48px 40px;
   overflow: hidden;
@@ -256,23 +257,69 @@ body {
 
 .tutorial-list {
   display: block;
-  margin: 0;
+  margin: 0 -8px;
   padding: 0;
   color: rgba(255, 255, 255, .8);
   font-family: Arial, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
   list-style: none;
   text-align: left;
 }
 
-.tutorial-list li {
-  margin-bottom: 9px;
+.role-guide {
+  margin-bottom: 14px;
+}
+
+.role-guide h3,
+.controls-guide h3 {
+  margin: 0 0 4px;
+  font-family: "Stratum No2 Bold", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.role-guide ul,
+.controls-guide ul {
+  margin: 0;
+  padding-left: 17px;
+}
+
+.role-guide li,
+.controls-guide li {
+  margin-bottom: 5px;
+  line-height: 1.25;
+}
+
+.role-innocent h3 {
+  color: #70e59a;
+  text-shadow: 0 0 8px rgba(112, 229, 154, .7);
+}
+
+.role-detective h3 {
+  color: #75bfff;
+  text-shadow: 0 0 8px rgba(117, 191, 255, .7);
+}
+
+.role-traitor h3 {
+  color: #ff7777;
+  text-shadow: 0 0 8px rgba(255, 119, 119, .7);
+}
+
+.role-jester h3 {
+  color: #ff8ed6;
+  text-shadow: 0 0 8px rgba(255, 142, 214, .7);
+}
+
+.controls-guide {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, .25);
 }
 
 .tutorial-list strong {
   display: inline-block;
-  min-width: 5rem;
+  min-width: 3.25rem;
   color: #ffffff;
   font-family: "Stratum No2 Bold", sans-serif;
   font-weight: 700;
