@@ -3,6 +3,7 @@
 
   var TEST_MAP = 'ttt_minecraft_b5';
   var MAP_IMAGE_DIRECTORY = 'img/maps/';
+  var PROFILE_WORKER_URL = 'https://steam-profile-loader.snowysdiscordalt.workers.dev/';
   var FALLBACK_PROFILE_IMAGE = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23323a46"/%3E%3Ccircle cx="50" cy="38" r="18" fill="%23b8c3d1"/%3E%3Cpath d="M18 92c3-22 16-33 32-33s29 11 32 33" fill="%23b8c3d1"/%3E%3C/svg%3E';
   var genericState = document.getElementById('generic-state');
   var mapState = document.getElementById('map-state');
@@ -110,6 +111,40 @@
       profileImage.src = profileImageSources[profileImageSourceIndex];
       profileImage.alt = 'Default Steam profile picture';
     }
+
+    if (playerId && !username) {
+      loadProfileFromWorker(playerId);
+    }
+  }
+
+  function loadProfileFromWorker(playerId) {
+    var request = new XMLHttpRequest();
+    request.open('GET', PROFILE_WORKER_URL + '?steamid=' + encodeURIComponent(playerId), true);
+    request.onreadystatechange = function () {
+      var profile;
+
+      if (request.readyState !== 4 || request.status < 200 || request.status >= 300) {
+        return;
+      }
+
+      try {
+        profile = JSON.parse(request.responseText);
+      } catch (error) {
+        return;
+      }
+
+      if (profile && typeof profile.name === 'string' && profile.name) {
+        playerNameElement.textContent = profile.name;
+        profileImage.alt = profile.name + ' Steam profile picture';
+      }
+
+      if (profile && typeof profile.avatar === 'string' && profile.avatar) {
+        profileImageSources = [profile.avatar, FALLBACK_PROFILE_IMAGE];
+        profileImageSourceIndex = 0;
+        profileImage.src = profileImageSources[profileImageSourceIndex];
+      }
+    };
+    request.send();
   }
 
   profileImage.addEventListener('error', function () {
