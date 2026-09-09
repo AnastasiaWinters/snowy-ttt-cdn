@@ -3,7 +3,6 @@
 
   var TEST_MAP = 'ttt_minecraft_b5';
   var MAP_IMAGE_DIRECTORY = 'img/maps/';
-  var FALLBACK_MAP_IMAGE = 'img/maps/gm_construct.jpg';
   var FALLBACK_PROFILE_IMAGE = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23323a46"/%3E%3Ccircle cx="50" cy="38" r="18" fill="%23b8c3d1"/%3E%3Cpath d="M18 92c3-22 16-33 32-33s29 11 32 33" fill="%23b8c3d1"/%3E%3C/svg%3E';
   var genericState = document.getElementById('generic-state');
   var mapState = document.getElementById('map-state');
@@ -122,7 +121,7 @@
 
   function useMapImage(mapName) {
     var safeMapName = cleanMapName(mapName);
-    var imagePath = safeMapName ? MAP_IMAGE_DIRECTORY + safeMapName + '.jpg' : FALLBACK_MAP_IMAGE;
+    var imagePath = MAP_IMAGE_DIRECTORY + safeMapName + '.jpg';
     var image = new Image();
 
     image.onload = function () {
@@ -136,19 +135,12 @@
     };
 
     image.onerror = function () {
-      if (imagePath !== FALLBACK_MAP_IMAGE) {
-        var fallbackImage = new Image();
-        fallbackImage.onload = function () {
-          mapBackground.style.backgroundImage = 'url("' + FALLBACK_MAP_IMAGE + '")';
-          mapNameElement.textContent = readableMapName(safeMapName);
-          mapBackground.classList.add('has-map-image');
-          genericState.classList.add('is-hidden');
-          mapState.classList.add('is-visible');
-          transitionStarted = true;
-          activeMapName = safeMapName;
-        };
-        fallbackImage.src = FALLBACK_MAP_IMAGE;
-      }
+      mapBackground.style.backgroundImage = 'none';
+      mapNameElement.textContent = readableMapName(safeMapName);
+      genericState.classList.add('is-hidden');
+      mapState.classList.add('is-visible');
+      transitionStarted = true;
+      activeMapName = safeMapName;
     };
 
     image.src = imagePath;
@@ -179,7 +171,7 @@
     }, waitTime);
   }
 
-  window.GameDetails = function (serverName, serverUrl, mapName, maxPlayers, steamId, gamemode) {
+  window.GameDetails = function (serverName, serverUrl, mapName, maxPlayers, steamId, gamemode, volume, language) {
     configurePlayer(steamId);
     if (cleanMapName(mapName)) {
       gameDetailsReceived = true;
@@ -205,7 +197,5 @@
         transitionToMap(TEST_MAP);
       }
     }, 2500);
-  } else if (getParameter('Map')) {
-    transitionToMap(getParameter('Map'));
   }
 }());
