@@ -268,6 +268,22 @@
     var safeMapName = cleanMapName(mapName);
     var imagePath = MAP_IMAGE_DIRECTORY + safeMapName + '.jpg';
     var image = new Image();
+    var isTerrariaMap = safeMapName.toLowerCase().indexOf('terraria') !== -1;
+    var lowerMapName = safeMapName.toLowerCase();
+    var isMinecraftMap = !isTerrariaMap &&
+      lowerMapName.indexOf('mcdonalds') === -1 &&
+      (lowerMapName.indexOf('minecraft') !== -1 || lowerMapName.indexOf('mc') !== -1);
+
+    if (isTerrariaMap) {
+      loadingScreen.classList.add('terraria-map');
+      loadingScreen.classList.remove('minecraft-map');
+    } else if (isMinecraftMap) {
+      loadingScreen.classList.remove('terraria-map');
+      loadingScreen.classList.add('minecraft-map');
+    } else {
+      loadingScreen.classList.remove('terraria-map');
+      loadingScreen.classList.remove('minecraft-map');
+    }
 
     image.onload = function () {
       mapBackground.style.backgroundImage = 'url("' + imagePath + '")';

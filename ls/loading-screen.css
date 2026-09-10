@@ -6,6 +6,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Andy Bold";
+  src: url("../fonts/ANDYB.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Minecraft";
+  src: url("../fonts/Minecraft.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   color-scheme: dark;
   font-family: "Stratum No2 Bold", sans-serif;
@@ -40,6 +56,20 @@ body {
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
+}
+
+.loading-screen.terraria-map,
+.loading-screen.terraria-map * {
+  font-family: "Andy Bold", sans-serif !important;
+}
+
+.loading-screen.minecraft-map,
+.loading-screen.minecraft-map * {
+  font-family: "Minecraft", sans-serif !important;
+}
+
+.loading-screen.minecraft-map .profile-image {
+  border-radius: 0;
 }
 
 .map-background {
