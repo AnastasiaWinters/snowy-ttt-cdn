@@ -30,15 +30,19 @@
 
   function scaleMapPanelContent() {
     var scale = Math.min(4, Math.max(.6, window.innerHeight / 1080));
+    if (loadingScreen.classList.contains('minecraft-map')) {
+      scale = Math.pow(2, Math.floor(Math.log(scale) / Math.LN2));
+    }
     var focusedScale = Math.min(1, Math.max(.45, (window.innerHeight / 1080) * 1.25 - .25));
     var panelPaddingVertical = 48 * scale;
     var panelPaddingHorizontal = window.innerHeight <= 760 ? 0 : 40 * scale;
     var panelPaddingTop = window.innerHeight <= 760 ? 0 : panelPaddingVertical;
 
-    mapPanelContent.style.webkitTransform = 'scale(' + scale + ')';
-    mapPanelContent.style.transform = 'scale(' + scale + ')';
-    mapPanelContent.style.marginRight = 'auto';
-    mapPanelContent.style.marginLeft = 'auto';
+    mapPanelContent.style.webkitTransform = 'translateX(-50%) scale(' + scale + ')';
+    mapPanelContent.style.transform = 'translateX(-50%) scale(' + scale + ')';
+    mapPanelContent.style.left = '50%';
+    mapPanelContent.style.marginRight = '0';
+    mapPanelContent.style.marginLeft = '0';
     genericState.style.webkitTransform = 'translate(-50%, -50%) scale(' + scale + ')';
     genericState.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
     mapPanel.style.padding = panelPaddingTop + 'px ' + panelPaddingHorizontal + 'px ' + panelPaddingVertical + 'px';
@@ -284,6 +288,7 @@
       loadingScreen.classList.remove('terraria-map');
       loadingScreen.classList.remove('minecraft-map');
     }
+    scaleMapPanelContent();
 
     image.onload = function () {
       mapBackground.style.backgroundImage = 'url("' + imagePath + '")';
