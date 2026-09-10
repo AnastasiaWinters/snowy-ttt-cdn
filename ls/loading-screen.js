@@ -18,6 +18,10 @@
   var mapNameElement = document.getElementById('map-name');
   var playerNameElement = document.getElementById('player-name');
   var loadingTipElement = document.getElementById('loading-tip');
+  var tutorialList = document.querySelector('.tutorial-list');
+  var leftAnchoredElements = document.querySelectorAll(
+    '.role-guide h3, .role-guide ul, .controls-guide ul, .tips-guide p'
+  );
   var transitionStarted = false;
   var profileImageSources = [];
   var profileImageSourceIndex = 0;
@@ -27,39 +31,49 @@
   var activeMapName = null;
   var gameDetailsReceived = false;
   var testMode = false;
+  var testMap = TEST_MAP;
 
   function scaleMapPanelContent() {
     var scale = Math.min(4, Math.max(.6, window.innerHeight / 1080));
-    if (loadingScreen.classList.contains('minecraft-map')) {
-      scale = Math.pow(2, Math.floor(Math.log(scale) / Math.LN2));
-    }
     var focusedScale = Math.min(1, Math.max(.45, (window.innerHeight / 1080) * 1.25 - .25));
     var panelPaddingVertical = 48 * scale;
     var panelPaddingHorizontal = window.innerHeight <= 760 ? 0 : 40 * scale;
-    var panelPaddingTop = window.innerHeight <= 760 ? 0 : panelPaddingVertical;
+    var panelPaddingTop = panelPaddingVertical / 2;
+    var panelWidth;
+    var panelContentWidth;
 
-    mapPanelContent.style.webkitTransform = 'translateX(-50%) scale(' + scale + ')';
-    mapPanelContent.style.transform = 'translateX(-50%) scale(' + scale + ')';
-    mapPanelContent.style.left = '50%';
-    mapPanelContent.style.marginRight = '0';
-    mapPanelContent.style.marginLeft = '0';
     genericState.style.webkitTransform = 'translate(-50%, -50%) scale(' + scale + ')';
     genericState.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
     mapPanel.style.padding = panelPaddingTop + 'px ' + panelPaddingHorizontal + 'px ' + panelPaddingVertical + 'px';
     profileImage.style.width = (128 * focusedScale) + 'px';
     profileImage.style.height = (128 * focusedScale) + 'px';
-    mapNameElement.style.fontSize = (34 * focusedScale) + 'px';
     profileBlock.style.display = window.innerHeight <= 760 ? 'none' : 'block';
     topPanelRule.style.display = window.innerHeight <= 760 ? 'none' : 'block';
     gameMode.style.display = window.innerHeight <= 760 ? 'none' : 'block';
+    tutorialList.style.paddingLeft = window.innerHeight <= 760 ? '2px' : '8px';
+    tutorialList.style.paddingRight = window.innerHeight <= 760 ? '2px' : '8px';
+    for (var elementIndex = 0; elementIndex < leftAnchoredElements.length; elementIndex += 1) {
+      leftAnchoredElements[elementIndex].style.paddingLeft =
+        window.innerWidth <= 800 ? Math.min(256, 256 * 480 / window.innerHeight) + 'px' : '';
+    }
 
     if (window.innerWidth > 800) {
-      mapPanelContent.style.width = (100 / scale) + '%';
-      mapPanel.style.width = (440 * scale) + 'px';
+      panelWidth = 440 * scale;
+      mapPanel.style.width = panelWidth + 'px';
     } else {
-      mapPanelContent.style.width = '100%';
-      mapPanel.style.width = '100%';
+      panelWidth = window.innerWidth;
+      mapPanel.style.width = panelWidth + 'px';
     }
+
+    panelContentWidth = (panelWidth - (panelPaddingHorizontal * 2)) / scale;
+    mapPanelContent.style.position = 'absolute';
+    mapPanelContent.style.top = panelPaddingTop + 'px';
+    mapPanelContent.style.left = '50%';
+    mapPanelContent.style.width = panelContentWidth + 'px';
+    mapPanelContent.style.webkitTransform = 'translateX(-50%) scale(' + scale + ')';
+    mapPanelContent.style.transform = 'translateX(-50%) scale(' + scale + ')';
+    mapPanelContent.style.marginRight = '0';
+    mapPanelContent.style.marginLeft = '0';
   }
 
   function getParameter(name) {
@@ -108,26 +122,85 @@
       });
   }
 
+  function setMapFontClass(mapName) {
+    var lowerMapName = mapName.toLowerCase();
+    var isTerrariaMap = lowerMapName.indexOf('terraria') !== -1;
+    var isMinecraftMap = !isTerrariaMap &&
+      lowerMapName.indexOf('mcdonalds') === -1 &&
+      (lowerMapName.indexOf('minecraft') !== -1 || lowerMapName.indexOf('mc') !== -1);
+
+    loadingScreen.classList.toggle('terraria-map', isTerrariaMap);
+    loadingScreen.classList.toggle('minecraft-map', isMinecraftMap);
+  }
+
   function addSnowfallDots() {
-    var snowTexts = document.querySelectorAll('.snow-text');
+    var snowTexts = document.querySelectorAll('.generic-state .snow-text');
+    var snowfallLetters = "!\"#$%&'()*+,-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_'abcdefghijklmnopqrstuvwxyz{}~";
     var textIndex;
     var index;
+
+    function animateRotation(rotationElement) {
+      window.setTimeout(function () {
+        var rotationTarget = -120 + Math.random() * 240;
+        rotationElement.style.webkitTransition = '-webkit-transform 6s linear';
+        rotationElement.style.transition = 'transform 6s linear';
+        rotationElement.style.webkitTransform = 'rotate(' + rotationTarget + 'deg)';
+        rotationElement.style.transform = rotationElement.style.webkitTransform;
+      }, 0);
+    }
+
+    function spawnSnowfallDot(snowText) {
+      var dot = document.createElement('span');
+      var rotation = document.createElement('span');
+      var rotationMotion = document.createElement('span');
+      var glyph = document.createElement('span');
+      dot.className = 'snow-dot';
+      dot.setAttribute('aria-hidden', 'true');
+      rotation.className = 'snow-rotation';
+      rotation.style.webkitTransform = 'rotate(' + (Math.random() * 360) + 'deg)';
+      rotation.style.transform = rotation.style.webkitTransform;
+      rotationMotion.className = 'snow-rotation-motion';
+      rotationMotion.style.webkitTransition = 'none';
+      rotationMotion.style.transition = 'none';
+      rotationMotion.style.webkitTransform = 'rotate(0deg)';
+      rotationMotion.style.transform = 'rotate(0deg)';
+      glyph.textContent = snowfallLetters.charAt(Math.floor(Math.random() * snowfallLetters.length));
+      glyph.className = 'snow-glyph';
+      dot.style.left = (8 + Math.random() * 84) + '%';
+      dot.style.width = '4px';
+      dot.style.height = '4px';
+      dot.style.webkitAnimationDelay = '0s';
+      dot.style.animationDelay = '0s';
+      rotation.style.webkitAnimationDelay = '0s';
+      rotation.style.animationDelay = '0s';
+      glyph.style.webkitAnimationDelay = '0s';
+      glyph.style.animationDelay = '0s';
+      glyph.style.webkitAnimationDuration = (2.5 + Math.random() * 2) + 's';
+      glyph.style.animationDuration = glyph.style.webkitAnimationDuration;
+      animateRotation(rotationMotion);
+      rotationMotion.appendChild(glyph);
+      rotation.appendChild(rotationMotion);
+      dot.appendChild(rotation);
+      snowText.appendChild(dot);
+      window.setTimeout(function (snowDot) {
+        if (snowDot.parentNode) {
+          snowDot.parentNode.removeChild(snowDot);
+        }
+      }, 3000, dot);
+    }
 
     for (textIndex = 0; textIndex < snowTexts.length; textIndex += 1) {
       var snowText = snowTexts[textIndex];
       for (index = 0; index < 20; index += 1) {
-        var dot = document.createElement('span');
-        dot.className = 'snow-dot';
-        dot.setAttribute('aria-hidden', 'true');
-        dot.style.left = (8 + Math.random() * 84) + '%';
-        dot.style.width = '4px';
-        dot.style.height = '4px';
-        dot.style.webkitAnimationDelay = (-Math.random() * 7) + 's';
-        dot.style.animationDelay = (-Math.random() * 7) + 's';
-        snowText.appendChild(dot);
+        spawnSnowfallDot(snowText);
       }
-
     }
+
+    window.setInterval(function () {
+      for (var spawnIndex = 0; spawnIndex < snowTexts.length; spawnIndex += 1) {
+        spawnSnowfallDot(snowTexts[spawnIndex]);
+      }
+    }, 150);
   }
 
   function loadRandomTip() {
@@ -272,22 +345,7 @@
     var safeMapName = cleanMapName(mapName);
     var imagePath = MAP_IMAGE_DIRECTORY + safeMapName + '.jpg';
     var image = new Image();
-    var isTerrariaMap = safeMapName.toLowerCase().indexOf('terraria') !== -1;
-    var lowerMapName = safeMapName.toLowerCase();
-    var isMinecraftMap = !isTerrariaMap &&
-      lowerMapName.indexOf('mcdonalds') === -1 &&
-      (lowerMapName.indexOf('minecraft') !== -1 || lowerMapName.indexOf('mc') !== -1);
-
-    if (isTerrariaMap) {
-      loadingScreen.classList.add('terraria-map');
-      loadingScreen.classList.remove('minecraft-map');
-    } else if (isMinecraftMap) {
-      loadingScreen.classList.remove('terraria-map');
-      loadingScreen.classList.add('minecraft-map');
-    } else {
-      loadingScreen.classList.remove('terraria-map');
-      loadingScreen.classList.remove('minecraft-map');
-    }
+    setMapFontClass(safeMapName);
     scaleMapPanelContent();
 
     image.onload = function () {
@@ -339,6 +397,12 @@
 
   window.GameDetails = function (serverName, serverUrl, mapName, maxPlayers, steamId, gamemode, volume, language) {
     configurePlayer(steamId);
+    if (testMode) {
+      gameDetailsReceived = true;
+      transitionToMap(testMap);
+      return;
+    }
+
     if (cleanMapName(mapName)) {
       gameDetailsReceived = true;
       transitionToMap(mapName);
@@ -356,14 +420,18 @@
   addSnowfallDots();
   loadRandomTip();
   configurePlayer(getParameter('SteamId') || getParameter('SteamID64'), getParameter('Username') || getParameter('Name'));
+  testMode = getParameter('test') === '1';
+  testMap = cleanMapName(getParameter('map')) || TEST_MAP;
+  if (testMode) {
+    setMapFontClass(testMap);
+  }
   scaleMapPanelContent();
   window.addEventListener('resize', scaleMapPanelContent);
-  testMode = getParameter('test') === '1';
 
   if (testMode) {
     window.setTimeout(function () {
       if (!gameDetailsReceived) {
-        transitionToMap(TEST_MAP);
+        transitionToMap(testMap);
       }
     }, 2500);
   }

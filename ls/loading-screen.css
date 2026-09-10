@@ -22,6 +22,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "WWFlakes";
+  src: url("../fonts/Wwflakes-dr1X.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   color-scheme: dark;
   font-family: "Stratum No2 Bold", sans-serif;
@@ -41,7 +49,7 @@ body {
   margin: 0;
   overflow: hidden;
   background: #080b12;
-  font-size: 85%;
+  font-size: 80%;
 }
 
 body {
@@ -57,6 +65,7 @@ body {
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
+  font-size: 1em;
 }
 
 .loading-screen.terraria-map,
@@ -67,6 +76,21 @@ body {
 .loading-screen.minecraft-map,
 .loading-screen.minecraft-map * {
   font-family: "Minecraft", sans-serif !important;
+}
+
+.loading-screen.terraria-map {
+  font-size: 1.25em;
+}
+
+.loading-screen.minecraft-map {
+  font-size: 1.25em;
+}
+
+.loading-screen.terraria-map .generic-state .snow-dot,
+.loading-screen.minecraft-map .generic-state .snow-dot,
+.loading-screen.terraria-map .generic-state .snow-glyph,
+.loading-screen.minecraft-map .generic-state .snow-glyph {
+  font-family: "WWFlakes", sans-serif !important;
 }
 
 .loading-screen.minecraft-map .profile-image {
@@ -119,6 +143,8 @@ body {
   bottom: auto;
   left: 50%;
   width: 100%;
+  z-index: 1;
+  font-size: 1rem;
   opacity: 1;
   text-align: center;
   -webkit-transform: translate(-50%, -50%);
@@ -150,19 +176,20 @@ body {
   margin: 0;
   padding: 2rem;
   text-align: center;
-  font-size: 48px;
+  font-size: 2em;
   line-height: 1;
   text-shadow: 0 0 24px rgba(0, 0, 0, .65);
 }
 
 .welcome-heading .snow-text,
 .welcome-title-emphasis {
-  font-size: 96px;
+  font-size: 4em;
 }
 
 .snow-text {
   display: inline-block;
   position: relative;
+  z-index: 1;
   text-shadow: 0 0 6px currentColor;
 }
 
@@ -182,47 +209,102 @@ body {
   position: absolute;
   top: 0;
   left: 50%;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: currentColor;
-  opacity: 0;
+  z-index: -1;
+  width: auto;
+  height: auto;
+  font-family: "WWFlakes", sans-serif;
+  font-size: 1em;
+  line-height: 1;
+  text-transform: lowercase;
   pointer-events: none;
-  -webkit-animation: snowfall 6s linear infinite;
-  animation: snowfall 6s linear infinite;
+  -webkit-animation: snowfall 12s linear infinite;
+  animation: snowfall 12s linear infinite;
+}
+
+.snow-glyph {
+  display: inline-block;
+  font-size: .25em;
+  -webkit-animation: snowfall-sway 3.5s ease-in-out infinite;
+  animation: snowfall-sway 3.5s ease-in-out infinite;
+}
+
+.snow-rotation,
+.snow-rotation-motion {
+  display: inline-block;
+}
+
+.snow-rotation {
+  opacity: 0;
+  -webkit-animation: snowfall-lifetime 3s linear 1 forwards;
+  animation: snowfall-lifetime 3s linear 1 forwards;
+}
+
+.snow-rotation-motion {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+@keyframes snowfall-lifetime {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: .5;
+  }
+}
+
+@-webkit-keyframes snowfall-lifetime {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: .5;
+  }
+}
+
+@keyframes snowfall-sway {
+  0%,
+  100% {
+    transform: translateX(-.12em);
+  }
+
+  50% {
+    transform: translateX(.12em);
+  }
+}
+
+@-webkit-keyframes snowfall-sway {
+  0%,
+  100% {
+    -webkit-transform: translateX(-.12em);
+  }
+
+  50% {
+    -webkit-transform: translateX(.12em);
+  }
 }
 
 @keyframes snowfall {
   0% {
-    transform: translateY(-1.2em);
-    opacity: 0;
-  }
-
-  12%,
-  78% {
-    opacity: .25;
+    transform: translateY(-.8em);
   }
 
   100% {
     transform: translateY(2.8em);
-    opacity: 0;
   }
 }
 
 @-webkit-keyframes snowfall {
   0% {
-    -webkit-transform: translateY(-1.2em);
-    opacity: 0;
-  }
-
-  12%,
-  78% {
-    opacity: .25;
+    -webkit-transform: translateY(-.8em);
   }
 
   100% {
     -webkit-transform: translateY(2.8em);
-    opacity: 0;
   }
 }
 
@@ -318,7 +400,7 @@ body {
 }
 
 .player-name {
-  font-size: 22px;
+  font-size: 1.375em;
 }
 
 .panel-rule {
@@ -330,7 +412,7 @@ body {
 .panel-label {
   margin: 0 0 .35rem;
   color: #b8dfff;
-  font-size: .8rem;
+  font-size: .8em;
   letter-spacing: .14em;
   text-align: center;
   text-shadow: 0 0 8px rgba(184, 223, 255, .8);
@@ -339,7 +421,7 @@ body {
 
 .map-panel h2 {
   margin: 0;
-  font-size: 34px;
+  font-size: 2.125em;
   line-height: 1.05;
   overflow-wrap: anywhere;
 }
@@ -347,13 +429,13 @@ body {
 .game-mode {
   margin-top: .65rem;
   color: #b8dfff;
-  font-size: 16px;
+  font-size: 1em;
 }
 
 .server-title {
   margin: .25rem 0 1rem;
   color: #ffffff;
-  font-size: 16px;
+  font-size: 1em;
   line-height: 1.1;
   text-shadow: 0 0 6px currentColor;
 }
@@ -372,11 +454,11 @@ body {
 
 .tutorial-list {
   display: block;
-  margin: 0 -8px;
-  padding: 0;
+  margin: 0;
+  padding: 0 8px;
   color: rgba(255, 255, 255, .8);
   font-family: "Stratum No2 Bold", sans-serif;
-  font-size: 13px;
+  font-size: .8125em;
   font-weight: 700;
   text-align: left;
 }
@@ -389,7 +471,7 @@ body {
 .controls-guide h3 {
   margin: 0 0 4px;
   font-family: "Stratum No2 Bold", sans-serif;
-  font-size: 16px;
+  font-size: 1em;
   font-weight: 700;
 }
 
@@ -487,5 +569,12 @@ body {
   .map-panel {
     width: 100%;
     background: linear-gradient(180deg, rgba(16, 22, 30, .82), rgba(16, 22, 30, .96));
+  }
+
+  .role-guide h3,
+  .role-guide ul,
+  .controls-guide ul,
+  .tips-guide p {
+    padding-left: 0;
   }
 }
